@@ -15,10 +15,15 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "hardhat": "^2.26.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0",
+    "@openzeppelin/contracts-upgradeable": "^5.1.0",
+    "axios": "^1.11.0"
   }
 }
