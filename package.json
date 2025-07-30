@@ -1,0 +1,24 @@
+{
+  "name": "v2",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/ButterJ1/v2#readme",
+  "bugs": {
+    "url": "https://github.com/ButterJ1/v2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ButterJ1/v2.git"
+  },
+  "license": "MIT",
+  "author": "ButterJ1",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "hardhat": "^2.26.1"
+  }
+}
