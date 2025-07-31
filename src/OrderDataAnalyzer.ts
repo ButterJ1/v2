@@ -7,7 +7,7 @@
 import axios, { AxiosResponse, AxiosHeaders } from 'axios';
 
 // 1inch API Configuration
-const INCH_API_BASE = 'https://api.1inch.dev/orderbook/v4.0';
+const INCH_API_BASE = 'https://api.1inch.dev';
 const ETHEREUM_CHAIN_ID = 1;
 
 // Token Addresses (Ethereum Mainnet)
@@ -71,30 +71,19 @@ interface ExecutionTracking {
 }
 
 interface PublicOrder {
-  // Core order data (from current 1inch)
-  readonly user: string;           // = maker
-  readonly amount: bigint;         // = makingAmount  
-  readonly targetPrice: bigint;    // calculated from makingAmount/takingAmount
-  readonly timestamp: bigint;      // order creation time
-  readonly expiry: bigint;         // extracted from makerTraits
-  
-  // NEW: Enhanced fields for transparent system
-  readonly gasPrice: bigint;       // max gas price for execution priority
-  readonly queuePosition: bigint;  // calculated execution priority
+  readonly user: string;
+  readonly amount: bigint;  
+  readonly targetPrice: bigint;
+  readonly timestamp: bigint;
+  readonly expiry: bigint;
+  readonly gasPrice: bigint;
+  readonly queuePosition: bigint;
   readonly priceProtection: PriceProtection;
-  
-  // Cross-chain specific
-  readonly sourceChain: number;    // origin blockchain
-  readonly targetChain: number;    // destination blockchain  
+  readonly sourceChain: number;
+  readonly targetChain: number;
   readonly wrappedToken: WrappedToken;
-  
-  // Balance monitoring
   readonly balanceCheck: BalanceCheck;
-
-  // Execution tracking
   readonly execution: ExecutionTracking;
-  
-  // Original 1inch data for reference
   readonly originalOrder?: InchOrder;
 }
 
@@ -141,17 +130,28 @@ class OrderDataAnalyzer {
    */
   async fetchAllOrders(): Promise<InchOrder[]> {
     try {
-      const url = `${INCH_API_BASE}/${ETHEREUM_CHAIN_ID}/all`;
+      const url = `${INCH_API_BASE}/orderbook/v4.0/${ETHEREUM_CHAIN_ID}/all`;
       console.log('Fetching all active orders from 1inch...');
       console.log('URL:', url);
       
-      const response: AxiosResponse<InchOrder[]> = await axios.get(url, { headers: this.headers });
+      const response: AxiosResponse<InchOrder[]> = await axios.get(url, { 
+        headers: this.headers,
+        params: {
+            page: 1,
+            limit: 100
+        },
+        timeout: 30000
+    });
       console.log(`Successfully fetched ${response.data.length} orders`);
       return response.data;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       const responseData = axios.isAxiosError(error) ? error.response?.data : null;
-      console.error('Error fetching orders:', responseData || errorMessage);
+            const status = axios.isAxiosError(error) ? error.response?.status : null;
+      
+      console.error('Error fetching orders:');
+      console.error('Status:', status);
+      console.error('Response:', responseData || errorMessage);
       return [];
     }
   }
